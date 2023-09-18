@@ -9,11 +9,13 @@ import java.util.Random;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import me.teboho.tweetjava.BuildConfig;
+
 public class Utility {
-    public static String consumerKey = "SBWB41Ee7BudqHpDPEZ0etgFk";
-    public static String consumerSecret = "M42YrEdLnYmozwLbc6Gp5S4DCHP1d1n0EPLAfasHrP0wyUUWwF";
-    public static String tokenKey = "1542207689870254080-2TRDnGU2AhrtIHdufULcJ1zDZZXx3t";
-    public static String tokenSecret = "JiYEyNXg2VjUVxSWIE5ZzAbKfwrNuJYpboUbv95ZKPURL";
+    public static String consumerKey = BuildConfig.consumerKey;
+    public static String consumerSecret = BuildConfig.consumerSecret;
+    public static String tokenKey = BuildConfig.tokenKey;
+    public static String tokenSecret = BuildConfig.tokenSecret;
 
     public static String prepareSignature(String signatureBase, String oAuthConsumerSecret, String oAuthTokenSecret) throws UnsupportedEncodingException {
         byte[] byteHMAC = null;

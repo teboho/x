@@ -1,5 +1,7 @@
 plugins {
     id("com.android.application")
+    // secrets
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -31,6 +33,8 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        // enable buildConfig generation
+        buildConfig = true
     }
 }
 

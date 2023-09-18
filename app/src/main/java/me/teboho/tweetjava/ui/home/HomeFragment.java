@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import me.teboho.tweetjava.BuildConfig;
 import me.teboho.tweetjava.OAuthSignature;
 import me.teboho.tweetjava.databinding.FragmentHomeBinding;
 import me.teboho.tweetjava.util.Utility;
