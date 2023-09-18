@@ -1,14 +1,14 @@
-package me.teboho.tweetjava.ui.notifications;
+package me.teboho.tweetjava.ui.postimage;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class PostImageViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public PostImageViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

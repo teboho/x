@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,6 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import me.teboho.tweetjava.OAuthSignature;
 import me.teboho.tweetjava.databinding.FragmentHomeBinding;
+import me.teboho.tweetjava.util.Utility;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,7 +42,7 @@ import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
 
-    public static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = new OkHttpClient();
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     private FragmentHomeBinding binding;
@@ -63,57 +65,39 @@ public class HomeFragment extends Fragment {
         // It's just a bunch of key value pairs on the authorization header
         String url = "https://api.twitter.com/2/tweets";
         String method = "POST";
-        String consumerKey = "SBWB41Ee7BudqHpDPEZ0etgFk";
-        String consumerSecret = "M42YrEdLnYmozwLbc6Gp5S4DCHP1d1n0EPLAfasHrP0wyUUWwF";
-        String tokenKey = "1542207689870254080-2TRDnGU2AhrtIHdufULcJ1zDZZXx3t";
-        String tokenSecret = "JiYEyNXg2VjUVxSWIE5ZzAbKfwrNuJYpboUbv95ZKPURL";
+        String consumerKey = Utility.consumerKey;
+        String consumerSecret = Utility.consumerSecret;
+        String tokenKey = Utility.tokenKey;
+        String tokenSecret = Utility.tokenSecret;
         long longTimeStamp = new Date().getTime() / 1000;
         String timestamp = Long.toString(longTimeStamp);
-        String nonce = genNonce(11);
+        String nonce = Utility.genNonce(11);
         
         // parameter string
-        String parameter_string=null;
+        String parameter_string="";
         try {
-            parameter_string = URLEncoder.encode("oauth_consumer_key", "UTF-8") + "="
-                    + URLEncoder.encode(consumerKey, "UTF-8") + "&" + URLEncoder.encode("oauth_nonce", "UTF-8") + "="
-                    + URLEncoder.encode(nonce, "UTF-8") + "&" + URLEncoder.encode("oauth_signature_method", "UTF-8")
-                    + "=" + URLEncoder.encode("HMAC-SHA1", "UTF-8") + "&"
-                    + URLEncoder.encode("oauth_timestamp", "UTF-8") + "=" + URLEncoder.encode(timestamp, "UTF-8") + "&"
-                    + URLEncoder.encode("oauth_token", "UTF-8") + "=" + URLEncoder.encode(tokenKey, "UTF-8") + "&"
-                    + URLEncoder.encode("oauth_version", "UTF-8") + "=" + URLEncoder.encode("1.0", "UTF-8");
+            parameter_string = Utility.genParamaterString(nonce, timestamp);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        // creating signature
+        // creating signature base string with METHOD and URL and parameters string
         String signature_base_string=null;
         try {
             signature_base_string = method + "&" + URLEncoder.encode(url, "UTF-8") + "&"
                     + URLEncoder.encode(parameter_string, "UTF-8");
         } catch (UnsupportedEncodingException e3) {
-            // TODO Auto-generated catch block
             e3.printStackTrace();
         }
 
-        String oauth_signature = "";
-        oauth_signature = computeSignature(signature_base_string, consumerSecret, tokenSecret);
         String signature=null;
         try {
-            signature = URLEncoder.encode(oauth_signature, "UTF-8");
+            signature = Utility.prepareSignature(signature_base_string, consumerSecret, tokenSecret);
         } catch (UnsupportedEncodingException e2) {
-            // TODO Auto-generated catch block
             e2.printStackTrace();
         }
 
-//        String signature = OAuthSignature.generateSignature(method, url, consumerKey, consumerSecret, tokenKey, tokenSecret);
-        String authHeaderValue = "OAuth " +
-                "oauth_consumer_key=\""+consumerKey+"\"" + "," +
-                "oauth_token=\""+tokenKey+"\"" + "," +
-                "oauth_signature_method=\"HMAC-SHA1\"" + "," +
-                "oauth_timestamp=\""+ timestamp + "\"" + "," +
-                "oauth_nonce=\""+ nonce +"\"" + "," +
-                "oauth_version=\"1.0\"" + "," +
-                "oauth_signature=\""+signature+"\"";
+        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature);
         System.out.println(authHeaderValue);
         button.setOnClickListener(l -> {
             String tweetMessage = textInputLayout.getEditText().getText().toString();
@@ -134,56 +118,31 @@ public class HomeFragment extends Fragment {
                 RequestBody body = RequestBody.create(finalMessage, JSON);
                 Request request = new Request.Builder()
                         .url(url)
-                        .addHeader("Authorization", authHeaderValue)
+                        .addHeader("Authorization", authHeaderValue) // oAuth header value comes here
                         .post(body)
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
                     Log.d("RESP", response.body().string());
                     System.out.println();
+                    if (response.code() < 300) {
+                        requireActivity().runOnUiThread(() -> {
+                            Toast toast = Toast.makeText(requireActivity(), "Post made :)", Toast.LENGTH_SHORT);
+                            toast.show();
+                        });
+                    }
                 } catch (IOException e) {
                     Log.e("RESP", "Sth aint right");
+                    requireActivity().runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(requireActivity(), "Sth went wrong :(", Toast.LENGTH_SHORT);
+                        toast.show();
+                    });
                     throw new RuntimeException(e);
                 }
             });
         });
 
         return root;
-    }
-
-    public String genNonce(int len) {
-        // Pick from some letters that won't be easily mistaken for each
-        // other. So, for example, omit o O and 0, 1 l and L.
-        String letters = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ0123456789";
-
-        String pw = "";
-        for (int i = 0; i < len; i++) {
-            int index = (int) (new Random().nextDouble() * letters.length());
-            pw += letters.substring(index, index + 1);
-        }
-        return pw;
-    }
-
-    private String computeSignature(String signatureBaseStr, String oAuthConsumerSecret, String oAuthTokenSecret) {
-
-        byte[] byteHMAC = null;
-        try {
-            Mac mac = Mac.getInstance("HmacSHA1");
-            SecretKeySpec spec;
-            if (null == oAuthTokenSecret) {
-                String signingKey = URLEncoder.encode(oAuthConsumerSecret, "UTF-8") + '&';
-                spec = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
-            } else {
-                String signingKey = URLEncoder.encode(oAuthConsumerSecret, "UTF-8") + '&'
-                        + URLEncoder.encode(oAuthTokenSecret, "UTF-8");
-                spec = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
-            }
-            mac.init(spec);
-            byteHMAC = mac.doFinal(signatureBaseStr.getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new String(Base64.getEncoder().encode(byteHMAC));
     }
 
     /**

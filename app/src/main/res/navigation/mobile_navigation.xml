@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="me.teboho.tweetjava.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_postimage"
+        android:name="me.teboho.tweetjava.ui.postimage.PostImageFragment"
+        android:label="@string/title_postimage"
+        tools:layout="@layout/fragment_postimage" />
 </navigation>

@@ -41,6 +41,7 @@ dependencies {
         }
     }
 
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     // We want to use Hmac algo to encrypt text
     implementation ("commons-codec:commons-codec:1.15")
