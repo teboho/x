@@ -23,5 +23,5 @@ Again, it cannot be used without keys generated from X/Twitter
 ## License
 
 ```
-MIT License
+Teboho License
 ```
