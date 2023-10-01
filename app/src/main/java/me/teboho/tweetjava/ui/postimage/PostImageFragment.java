@@ -38,6 +38,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import me.teboho.tweetjava.databinding.FragmentPostimageBinding;
+import me.teboho.tweetjava.ui.home.HomeFragment;
 import me.teboho.tweetjava.util.Utility;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -225,8 +226,10 @@ public class PostImageFragment extends Fragment {
         String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature);
         System.out.println(authHeaderValue);
 
+        String text = binding.etCaption.getEditText().getText().toString();
+        text = HomeFragment.complyJSON(text);
         String message = "{" +
-                "\"text\" : \""+""+"\"," +
+                "\"text\" : \""+ text +"\"," +
                 "\"media\": {\"media_ids\":[\""+mediaId+"\"]}" +
                 "}";
         Log.d("MESSAGE", message);
@@ -260,6 +263,7 @@ public class PostImageFragment extends Fragment {
         });
     }
 
+    // Alt: not getting used any more
     private String getPathFromUri(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         CursorLoader cursorLoader = new CursorLoader(requireContext(), uri, projection, null, null, null);
@@ -276,6 +280,7 @@ public class PostImageFragment extends Fragment {
         return null;
     }
 
+    // Alt: not getting used
     private void imageChooser() {
         Intent i = new Intent();
         i.setType("image/*");
@@ -283,6 +288,7 @@ public class PostImageFragment extends Fragment {
         launchImagePicker.launch(i);
     }
 
+    // Alt: not getting used
     ActivityResultLauncher<Intent> launchImagePicker
             = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -296,6 +302,7 @@ public class PostImageFragment extends Fragment {
                             binding.imageView.setImageURI(selectedImageUri);
                             binding.imageView.setVisibility(View.VISIBLE);
                             binding.btnTweetImage.setVisibility(View.VISIBLE);
+                            binding.etCaption.setVisibility(View.VISIBLE);
                             imageUri = selectedImageUri;
                         }
                     }
@@ -312,6 +319,7 @@ public class PostImageFragment extends Fragment {
                     binding.imageView.setImageURI(uri);
                     binding.imageView.setVisibility(View.VISIBLE);
                     binding.btnTweetImage.setVisibility(View.VISIBLE);
+                    binding.etCaption.setVisibility(View.VISIBLE);
                     imageUri = uri;
                 } else {
                     Log.d("PhotoPicker", "No media selected");

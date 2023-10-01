@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     // secrets
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -44,6 +48,13 @@ dependencies {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
+
+    // Import the Firebase BOM
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    // TODO: Add the dependencies for the Firebase products you want to use
+    // When using the BOM, don't specify versions in Firebase dependecies
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
 
     implementation ("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
