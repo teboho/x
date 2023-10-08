@@ -9,6 +9,11 @@ Cannot be used without consumer keys generated from X/Twitter
 
 ## Screenshots
 
+<!-- ![Login](assets/Login.png)   -->
+<img src="assets/Login.png" width="200" height="400" alt="Login" />  
+
+*Login Screen*
+
 <!-- ![Home](assets/Home.png)   -->
 <img src="assets/Home.png" width="200" height="400" alt="Home" />  
 
