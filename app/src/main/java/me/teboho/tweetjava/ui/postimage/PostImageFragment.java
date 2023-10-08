@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.loader.content.CursorLoader;
@@ -37,6 +38,8 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import me.teboho.tweetjava.MainActivity;
+import me.teboho.tweetjava.R;
 import me.teboho.tweetjava.databinding.FragmentPostimageBinding;
 import me.teboho.tweetjava.ui.home.HomeFragment;
 import me.teboho.tweetjava.util.Utility;
@@ -91,6 +94,15 @@ public class PostImageFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (Utility.tokenSecret.equals("")) {
+            ((MainActivity)requireActivity()).getNavController().navigate(R.id.action_navigation_postimage_to_navigation_login);
+        }
+    }
+
     private void tweetImage() throws URISyntaxException {
         if (imageUri == null) return;
 
@@ -109,7 +121,7 @@ public class PostImageFragment extends Fragment {
         // parameter string
         String parameter_string="";
         try {
-            parameter_string = Utility.genParamaterString(nonce, timestamp);
+            parameter_string = Utility.genParamaterString(nonce, timestamp, consumerKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -130,7 +142,7 @@ public class PostImageFragment extends Fragment {
             e2.printStackTrace();
         }
 
-        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature);
+        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature, consumerKey, tokenKey);
         System.out.println(authHeaderValue);
 
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -202,7 +214,7 @@ public class PostImageFragment extends Fragment {
         // parameter string
         String parameter_string="";
         try {
-            parameter_string = Utility.genParamaterString(nonce, timestamp);
+            parameter_string = Utility.genParamaterString(nonce, timestamp, consumerKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -223,7 +235,7 @@ public class PostImageFragment extends Fragment {
             e2.printStackTrace();
         }
 
-        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature);
+        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature, consumerKey, tokenKey);
         System.out.println(authHeaderValue);
 
         String text = binding.etCaption.getEditText().getText().toString();

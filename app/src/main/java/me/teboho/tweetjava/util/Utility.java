@@ -12,10 +12,10 @@ import javax.crypto.spec.SecretKeySpec;
 import me.teboho.tweetjava.BuildConfig;
 
 public class Utility {
-    public static String consumerKey = BuildConfig.consumerKey;
-    public static String consumerSecret = BuildConfig.consumerSecret;
-    public static String tokenKey = BuildConfig.tokenKey;
-    public static String tokenSecret = BuildConfig.tokenSecret;
+    public static String consumerKey = BuildConfig.consumerKey; // This is generated on the developer portal
+    public static String consumerSecret = BuildConfig.consumerSecret; // From dev portal as well
+    public static String tokenKey = ""; //BuildConfig.tokenKey;
+    public static String tokenSecret = ""; // BuildConfig.tokenSecret;
 
     public static String prepareSignature(String signatureBase, String oAuthConsumerSecret, String oAuthTokenSecret) throws UnsupportedEncodingException {
         byte[] byteHMAC = null;
@@ -60,7 +60,7 @@ public class Utility {
         return nonce;
     }
 
-    public static String genParamaterString(String nonce, String timestamp) throws UnsupportedEncodingException {
+    public static String genParamaterString(String nonce, String timestamp, String consumerKey) throws UnsupportedEncodingException {
         return URLEncoder.encode("oauth_consumer_key", "UTF-8") + "="
                 + URLEncoder.encode(consumerKey, "UTF-8") + "&" + URLEncoder.encode("oauth_nonce", "UTF-8") + "="
                 + URLEncoder.encode(nonce, "UTF-8") + "&" + URLEncoder.encode("oauth_signature_method", "UTF-8")
@@ -70,7 +70,7 @@ public class Utility {
                 + URLEncoder.encode("oauth_version", "UTF-8") + "=" + URLEncoder.encode("1.0", "UTF-8");
     }
 
-    public static String genOAuthHeader(String nonce, String timestamp, String signature) {
+    public static String genOAuthHeader(String nonce, String timestamp, String signature, String consumerKey, String tokenKey) {
         return "OAuth " +
                 "oauth_consumer_key=\""+consumerKey+"\"" + "," +
                 "oauth_token=\""+tokenKey+"\"" + "," +

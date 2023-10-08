@@ -6,33 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.SecureRandom;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.Console;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import me.teboho.tweetjava.BuildConfig;
-import me.teboho.tweetjava.OAuthSignature;
+import me.teboho.tweetjava.MainActivity;
+import me.teboho.tweetjava.R;
 import me.teboho.tweetjava.databinding.FragmentHomeBinding;
 import me.teboho.tweetjava.util.Utility;
 import okhttp3.MediaType;
@@ -77,7 +69,7 @@ public class HomeFragment extends Fragment {
         // parameter string
         String parameter_string="";
         try {
-            parameter_string = Utility.genParamaterString(nonce, timestamp);
+            parameter_string = Utility.genParamaterString(nonce, timestamp, consumerKey);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -98,7 +90,7 @@ public class HomeFragment extends Fragment {
             e2.printStackTrace();
         }
 
-        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature);
+        String authHeaderValue = Utility.genOAuthHeader(nonce, timestamp, signature, consumerKey, tokenKey);
         System.out.println(authHeaderValue);
         button.setOnClickListener(l -> {
             String tweetMessage = textInputLayout.getEditText().getText().toString();
@@ -144,6 +136,15 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (Utility.tokenSecret.equals("")) {
+            ((MainActivity)requireActivity()).getNavController().navigate(R.id.action_navigation_home_to_navigation_login);
+        }
     }
 
     /**
