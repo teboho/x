@@ -1,8 +1,11 @@
 # Tweet from Custom Android app
 
-> Requires you to generate your own keys from Twitter developer portal, and store them local.properties file in the root directory.
+> Requires you to generate your own consumer keys from Twitter developer portal, and store them local.properties file in the root directory.
 
-Cannot be used without keys generated from X/Twitter
+> Now users can use the apk in the releases section to login with their twitter accounts.  
+> https://github.com/teboho/x/releases/tag/8.10.2023-v0
+
+Cannot be used without consumer keys generated from X/Twitter
 
 ## Screenshots
 
@@ -18,7 +21,7 @@ Cannot be used without keys generated from X/Twitter
 
 ---
 
-Again, it cannot be used without keys generated from X/Twitter
+Again, it cannot be used without consumer keys generated from X/Twitter
 
 ## License
 
