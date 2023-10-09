@@ -3,7 +3,7 @@
 > Requires you to generate your own consumer keys from Twitter developer portal, and store them local.properties file in the root directory.
 
 > Now users can use the apk in the releases section to login with their twitter accounts.  
-> https://github.com/teboho/x/releases/tag/8.10.2023-v0
+> [https://github.com/teboho/x/releases/download/8.10.2023-v0/TweetJava.apk](https://github.com/teboho/x/releases/download/8.10.2023-v0/TweetJava.apk)
 
 The code cannot be used without consumer keys generated from X/Twitter
 
